@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab Syncer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>Tab Syncer</h1>
+            <div class="actions">
+                <button id="theme-toggle" aria-label="Toggle Dark Mode">🌙</button>
+                <button id="logout-btn" class="hidden">Logout</button>
+            </div>
+        </header>
+
+        <div id="auth-section">
+            <p>Sign in to sync your tabs.</p>
+            <button id="login-google" class="btn-primary">Login with Google</button>
+            <button id="login-github" class="btn-secondary">Login with GitHub</button>
+        </div>
+
+        <div id="main-section" class="hidden">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="urls">Synced URLs</button>
+                <button class="tab-btn" data-tab="devices">Devices</button>
+            </div>
+
+            <div id="urls-tab" class="tab-content active">
+                <div class="controls">
+                    <button id="sync-now-btn">Sync Now</button>
+                    <button id="add-current-btn">+ Add Current</button>
+                    <button id="delete-selected-btn" class="hidden" disabled>Delete Selected</button>
+                </div>
+                <ul id="url-list">
+                    <!-- URLs will be injected here -->
+                </ul>
+            </div>
+
+            <div id="devices-tab" class="tab-content">
+                <ul id="device-list">
+                    <!-- Devices will be injected here -->
+                </ul>
+            </div>
+        </div>
+        
+        <div id="status-bar">Ready</div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
