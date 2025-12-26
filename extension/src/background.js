@@ -162,6 +162,26 @@ const syncUrl = async (tab) => {
     }
 };
 
+// --- Auth Listener ---
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status === 'complete' && tab.url && tab.url.startsWith('http://localhost:3000/auth/success')) {
+        const url = new URL(tab.url);
+        const token = url.searchParams.get('token');
+
+        if (token) {
+            chrome.storage.local.set({ authToken: token }, () => {
+                console.log('Auth token captured');
+                chrome.tabs.remove(tabId);
+                // Notify popup if open
+                chrome.runtime.sendMessage({ type: 'LOGIN_SUCCESS' });
+                // Connect WS
+                connectWebSocket();
+            });
+        }
+    }
+});
+
 // --- Initialization ---
 
 chrome.runtime.onStartup.addListener(() => {

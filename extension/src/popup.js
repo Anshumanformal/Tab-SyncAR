@@ -98,31 +98,17 @@ const setupEventListeners = () => {
 // --- Auth ---
 
 const startAuth = (provider) => {
-    // We'll use launchWebAuthFlow
     const authUrl = `${AUTH_BASE}/${provider}`;
-
-    chrome.identity.launchWebAuthFlow({
-        url: authUrl,
-        interactive: true
-    }, async (redirectUrl) => {
-        if (chrome.runtime.lastError || !redirectUrl) {
-            console.error(chrome.runtime.lastError);
-            return;
-        }
-
-        // Extract token from redirect URL
-        // The server redirects to /auth/success?token=...
-        // But launchWebAuthFlow expects a redirect to the extension ID.
-        // We need to adjust the server to redirect to `chrome-extension://${chrome.runtime.id}/...` 
-        // OR we just parse the token if the server redirects to a known URL that we can intercept?
-        // launchWebAuthFlow is tricky with localhost.
-
-        // Alternative: Open a tab, let user login, and have a content script on the success page send the token to background.
-        // Since we are in "Convenience-first", let's try the tab approach which is more robust for localhost.
-
-        chrome.tabs.create({ url: authUrl });
-    });
+    chrome.tabs.create({ url: authUrl });
+    // The background script will listen for the callback URL, extract the token, and close the tab.
+    // We listen for the LOGIN_SUCCESS message to update UI.
 };
+
+chrome.runtime.onMessage.addListener((message) => {
+    if (message.type === 'LOGIN_SUCCESS') {
+        showMain();
+    }
+});
 
 // --- UI Rendering ---
 
