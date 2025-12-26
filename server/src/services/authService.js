@@ -23,12 +23,14 @@ const getOrCreateUser = async (email, provider) => {
 };
 
 const googleAuth = async (code) => {
-    const { data } = await axios.post('https://oauth2.googleapis.com/token', {
+    const { data } = await axios.post('https://oauth2.googleapis.com/token', new URLSearchParams({
         client_id: process.env.GOOGLE_CLIENT_ID,
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
         code,
         grant_type: 'authorization_code',
         redirect_uri: process.env.GOOGLE_CALLBACK_URL,
+    }).toString(), {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     });
 
     const { access_token } = data;
@@ -45,6 +47,7 @@ const githubAuth = async (code) => {
         client_id: process.env.GITHUB_CLIENT_ID,
         client_secret: process.env.GITHUB_CLIENT_SECRET,
         code,
+        redirect_uri: process.env.GITHUB_CALLBACK_URL,
     }, {
         headers: { Accept: 'application/json' }
     });
